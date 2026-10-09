@@ -5,14 +5,13 @@ import copy
 import json
 from pathlib import Path
 
+import jsonschema
 import pytest
+import yaml
 
-jsonschema = pytest.importorskip("jsonschema")
-yaml = pytest.importorskip("yaml")
-
-ROOT = Path(__file__).resolve().parents[2]
-SCHEMA = json.loads((ROOT / "contracts/pipeline/v1.schema.json").read_text())
-EXAMPLE = yaml.safe_load((ROOT / "contracts/pipeline/examples/branched.kionga.yaml").read_text())
+ROOT = Path(__file__).resolve().parents[1]
+SCHEMA = json.loads((ROOT / "pipeline/v1.schema.json").read_text())
+EXAMPLE = yaml.safe_load((ROOT / "pipeline/examples/branched.kionga.yaml").read_text())
 
 
 def errors(document):
