@@ -5,7 +5,7 @@ change: bump the version, then update every consumer.
 
 | Contract | File | Consumers |
 | --- | --- | --- |
-| Pipeline definition `kionga.dev/v1 Pipeline` | [`pipeline/v1.schema.json`](pipeline/v1.schema.json) | [platform](https://github.com/kiongahq/platform) (Go validator, `internal/pipelinespec`), [pipeline-runner](https://github.com/kiongahq/pipeline-runner), editors and CI in user projects |
+| Pipeline definition `kionga.dev/v1 Pipeline` | [`pipeline/v1.schema.json`](pipeline/v1.schema.json) | [platform](https://github.com/kiongahq/platform) (Go validator, `internal/pipelinespec`, tests against the same example); editors and CI in user projects. The [pipeline-runner](https://github.com/kiongahq/pipeline-runner) receives definitions the platform has already validated. |
 
 [`pipeline/examples/`](pipeline/examples/) holds canonical documents. The schema test
 here checks the example is valid and that structural mistakes are rejected, and the
