@@ -10,9 +10,13 @@ Versioned schemas that the Kionga components agree on.
 Kionga is a self-hosted platform for machine learning, data and AI agents. Its
 components live in separate repositories, so any document that more than one of
 them reads needs a single, versioned definition. This repository holds those
-definitions. Today it publishes one contract: the `kionga.dev/v1 Pipeline`
-definition, a JSON Schema for the YAML files you use to describe a pipeline as a
-graph of containers.
+definitions:
+
+- `pipeline/`: the `kionga.dev/v1 Pipeline` definition, a JSON Schema for the YAML
+  files you use to describe a pipeline as a graph of containers.
+- `agent-graph/`: native Agent Designer graphs (schema version 2), the component
+  registry with typed ports, run events, published agent versions and starter
+  templates. See [agent-graph/README.md](agent-graph/README.md).
 
 The [platform](https://github.com/kiongahq/platform) pins this repository as a Git
 submodule and validates every pipeline definition before it stores or runs it.
