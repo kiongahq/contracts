@@ -60,6 +60,55 @@ keys and list indexes (`result.items.0.name`). Text input is parsed as JSON firs
 When the field is missing, `missing: fail` fails the node and `missing: empty`
 returns `null`.
 
+## Router and join
+
+`router` checks `route_1` to `route_4` in order (same grammar as conditions) and
+sends the value out of the first matching port, or `default`. Only that branch
+runs. `join` runs once every upstream node has finished or been skipped, and
+outputs a JSON object keyed by upstream node ID. With `require: all` it fails if
+any upstream branch was skipped or failed.
+
+## Parallel execution
+
+Nodes whose upstream nodes have all finished run concurrently, so independent
+branches overlap in time. Event `seq` stays strictly increasing; events of
+concurrent nodes interleave.
+
+## Flows: map, bounded loop and subflow
+
+These run a **published version** (`agv-…`, resource kind `agent_version`) as a
+nested graph. The version ID pins the nested graph, so edits never change a
+published parent. The runner receives every nested graph with the run; a
+deployed artifact embeds them under `subflows`, each with its own
+`content_sha256`, which the runtime verifies.
+
+- `subflow` runs the version once with the inbound value as its input.
+- `map` runs it once per item of a JSON list (or per non-empty line of text), at
+  most `max_items` (20), with up to `concurrency` (4) in flight, and outputs the
+  list of replies in item order.
+- `loop` runs it, feeds each reply back as the next input, and stops when `until`
+  matches the reply (`out`) or after `max_iterations` (10) (`exhausted`).
+
+Nested runs share the parent's step, token and time budgets and its side-effect
+approval. Nesting is limited to 3 levels and 10 distinct versions per run. A
+nested failure fails the flow node, which can route to its `error` port.
+`node.completed` for map and loop carries `iterations`.
+
+## Human approval
+
+`approval` renders `message`, creates a Kionga approval request
+(`approval.requested` with `approval_id`) and waits. A project member with agents
+write access approves or rejects it; the run's own credential cannot decide.
+The value leaves through `approved` or `rejected` (`approval.resolved` with
+`port`). A request not decided within `timeout_seconds` (10–290) leaves through
+`rejected`.
+
+## Streaming
+
+`model` nodes using the platform chat model emit `node.delta` events with
+incremental text. Deltas are best-effort (a consumer may miss some);
+`node.completed` and `run.completed` always carry the full output.
+
 ## Side effects
 
 `tool` and `api` nodes can change external systems. A playground or evaluation run

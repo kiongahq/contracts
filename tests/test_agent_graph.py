@@ -70,7 +70,7 @@ def test_registry_is_self_consistent():
         for field in component["config"]:
             assert field["type"] in {"string", "template", "integer", "enum", "resource", "expression"}
             if field["type"] == "resource":
-                assert field["resource"] in {"model", "tool", "knowledge_base", "dataset", "connection"}
+                assert field["resource"] in {"model", "tool", "knowledge_base", "dataset", "connection", "agent_version"}
             if field["type"] == "integer" and "default" in field:
                 assert field["minimum"] <= int(field["default"]) <= field["maximum"]
             if field["type"] == "enum":
@@ -151,7 +151,7 @@ def test_canonical_hash_fixture_reproduces():
 
 
 def test_artifact_and_event_examples_validate():
-    registry = Registry().with_resource("v2.schema.json", Resource.from_contents(GRAPH))
+    registry = Registry().with_resource(GRAPH["$id"], Resource.from_contents(GRAPH))
     artifact = {
         "artifact_version": 1, "id": "agv-" + "a" * 24, "design_id": "agd-" + "b" * 24,
         "project_id": "prj-demo", "version": 1, "content_sha256": HASH["expected_sha256"],
@@ -181,3 +181,37 @@ def test_failure_prone_components_expose_an_error_port():
         assert "error" not in [port["name"] for port in BY_KIND[kind]["outputs"]], kind
     path = re.compile(next(f for f in BY_KIND["extract"]["config"] if f["key"] == "path")["pattern"])
     assert path.match("result.items.0.name") and not path.match("a..b") and not path.match("__import__('os')")
+
+
+def test_flow_and_approval_components():
+    for kind in ("map", "loop", "subflow"):
+        subflow = next(f for f in BY_KIND[kind]["config"] if f["key"] == "subflow")
+        assert subflow["resource"] == "agent_version" and subflow["required"]
+        assert "error" in [p["name"] for p in BY_KIND[kind]["outputs"]]
+    assert [p["name"] for p in BY_KIND["loop"]["outputs"]] == ["out", "exhausted", "error"]
+    assert [p["name"] for p in BY_KIND["approval"]["outputs"]] == ["approved", "rejected"]
+    assert [p["name"] for p in BY_KIND["router"]["outputs"]] == ["route_1", "route_2", "route_3", "route_4", "default"]
+    approval_timeout = next(f for f in BY_KIND["approval"]["config"] if f["key"] == "timeout_seconds")
+    assert approval_timeout["maximum"] < 300, "an approval must expire inside the longest run budget"
+    for kind in ("map", "loop", "subflow", "approval", "router", "join"):
+        assert not BY_KIND[kind]["side_effects"], "nested side effects are enforced by the nested nodes"
+
+
+def test_new_events_and_artifact_subflows_validate():
+    registry = Registry().with_resource(GRAPH["$id"], Resource.from_contents(GRAPH))
+    for event in [
+        {"seq": 3, "type": "node.delta", "run_id": "agr-" + "d" * 24, "ts": "2026-10-27T00:00:00Z", "node_id": "model", "delta": "Hel"},
+        {"seq": 4, "type": "approval.requested", "run_id": "agr-" + "d" * 24, "ts": "2026-10-27T00:00:00Z", "node_id": "ok", "approval_id": "apr-" + "e" * 24},
+        {"seq": 5, "type": "node.completed", "run_id": "agr-" + "d" * 24, "ts": "2026-10-27T00:00:00Z", "node_id": "loop", "iterations": 3},
+    ]:
+        assert list(jsonschema.Draft202012Validator(EVENT).iter_errors(event)) == []
+    artifact = {
+        "artifact_version": 1, "id": "agv-" + "a" * 24, "design_id": "agd-" + "b" * 24, "project_id": "p", "version": 2,
+        "content_sha256": "0" * 64, "registry_version": "1.2.0", "graph": HASH["graph"], "source_revision": 1, "author": "ada",
+        "created_at": "2026-10-27T00:00:00Z", "runtime": {"graph_module": "agents.native_graph:build_native"},
+        "subflows": {"agv-" + "c" * 24: {"content_sha256": "1" * 64, "graph": HASH["graph"]}},
+    }
+    validator = jsonschema.Draft202012Validator(ARTIFACT, registry=registry)
+    assert list(validator.iter_errors(artifact)) == []
+    artifact["subflows"]["not-a-version"] = artifact["subflows"]["agv-" + "c" * 24]
+    assert list(validator.iter_errors(artifact))

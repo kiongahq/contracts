@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/kiongahq/contracts/v1.1.0/agent-graph/v2.schema.json",
+  "$id": "https://raw.githubusercontent.com/kiongahq/contracts/v1.3.0/agent-graph/v2.schema.json",
   "title": "Kionga native agent graph",
   "description": "A declarative agent graph built in the native Agent Designer. Version 1 drafts (no schema_version) are valid version 2 documents: every field added in version 2 is optional and has a documented default. Node kinds, ports and settings are defined by the component registry (components.v1.json); this schema checks structure only.",
   "type": "object",
@@ -54,8 +54,8 @@
       "properties": {
         "from": {"$ref": "#/$defs/id"},
         "to": {"$ref": "#/$defs/id"},
-        "from_port": {"type": "string", "pattern": "^[a-z][a-z_]{0,31}$", "description": "Defaults to the source component's first output port."},
-        "to_port": {"type": "string", "pattern": "^[a-z][a-z_]{0,31}$", "description": "Defaults to the target component's first input port."}
+        "from_port": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,31}$", "description": "Defaults to the source component's first output port."},
+        "to_port": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,31}$", "description": "Defaults to the target component's first input port."}
       }
     },
     "settings": {
