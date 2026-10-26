@@ -4,6 +4,7 @@ components, and the canonical hash fixture reproduces. The gateway (Go) and
 agent-runtime (Python) assert the same fixture and registry bytes."""
 
 import copy
+import re
 import hashlib
 import json
 from pathlib import Path
@@ -74,6 +75,8 @@ def test_registry_is_self_consistent():
                 assert field["minimum"] <= int(field["default"]) <= field["maximum"]
             if field["type"] == "enum":
                 assert field.get("default", field["options"][0]) in field["options"]
+            if "pattern" in field:
+                re.compile(field["pattern"])
     assert BY_KIND["input"]["singleton"] and BY_KIND["output"]["singleton"]
     assert BY_KIND["tool"]["side_effects"] and BY_KIND["api"]["side_effects"]
 
@@ -168,3 +171,13 @@ def test_artifact_and_event_examples_validate():
     assert list(jsonschema.Draft202012Validator(EVENT).iter_errors(event)) == []
     event["type"] = "node.exploded"
     assert list(jsonschema.Draft202012Validator(EVENT).iter_errors(event))
+
+
+def test_failure_prone_components_expose_an_error_port():
+    for kind in ("model", "tool", "api", "knowledge", "storage"):
+        outputs = [port["name"] for port in BY_KIND[kind]["outputs"]]
+        assert outputs[0] == "out" and "error" in outputs, kind
+    for kind in ("input", "prompt", "condition", "memory", "extract"):
+        assert "error" not in [port["name"] for port in BY_KIND[kind]["outputs"]], kind
+    path = re.compile(next(f for f in BY_KIND["extract"]["config"] if f["key"] == "path")["pattern"])
+    assert path.match("result.items.0.name") and not path.match("a..b") and not path.match("__import__('os')")

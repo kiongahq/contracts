@@ -43,6 +43,23 @@ selected branch runs; nodes reachable only through the other branch are reported
 value. A node with no inbound edges (the input, or a source such as a dataset loader)
 always runs.
 
+## Error ports
+
+`model`, `tool`, `api`, `knowledge` and `storage` have a second output, `error`.
+These nodes can fail with `node_error`, `resource_denied`, `resource_unavailable`
+or a node `timeout`. When a node fails and its `error` port is connected, the run
+emits `node.failed`, sends the redacted failure message (text) out of `error`, and
+continues on that branch. Nodes fed only by the node's `out` port are skipped.
+Unconnected error ports, side-effect refusals, budget failures, run timeouts and
+cancellation still end the run.
+
+## Extract
+
+`extract` picks one field from a JSON value with a dot-separated `path` of object
+keys and list indexes (`result.items.0.name`). Text input is parsed as JSON first.
+When the field is missing, `missing: fail` fails the node and `missing: empty`
+returns `null`.
+
 ## Side effects
 
 `tool` and `api` nodes can change external systems. A playground or evaluation run
