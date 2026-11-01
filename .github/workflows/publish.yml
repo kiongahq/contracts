@@ -1,0 +1,40 @@
+name: Publish contracts
+on:
+  release:
+    types: [published]
+permissions:
+  contents: read
+concurrency:
+  group: publish-contracts-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: '!github.event.release.prerelease'
+    uses: kiongahq/.github/.github/workflows/python.yml@76e4fed230c4f0b89b1bcf884df60e5b2fffca67
+    with:
+      install: pip install -r requirements-dev.txt
+  archive:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: kiongahq/.github/release/validate@717e2cc3be707aff75c717662c6b3fea58ab56d8
+        with:
+          tag: ${{ github.event.release.tag_name }}
+          default-branch: ${{ github.event.repository.default_branch }}
+      - name: Package reviewed schemas and checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          mkdir dist
+          git archive --format=tar.gz --prefix="contracts-${RELEASE_TAG#v}/" \
+            -o "dist/contracts-${RELEASE_TAG#v}.tar.gz" HEAD
+          cd dist
+          sha256sum ./*.tar.gz > SHA256SUMS
+          gh release upload "$RELEASE_TAG" ./* --repo "$GITHUB_REPOSITORY"
