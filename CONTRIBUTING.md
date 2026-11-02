@@ -58,8 +58,9 @@ common structural mistakes are rejected. The ruff rule set is pinned in
 4. Update every consumer in the same change set: the Go validator and its tests in
    [platform](https://github.com/kiongahq/platform) (`go/internal/pipelinespec`),
    then move the platform's `contracts` submodule to your commit.
-5. After merge, tag a release: `vMAJOR.MINOR.PATCH`, with a new major version for a
-   new schema file.
+5. Review the generated release PR and its version/changelog changes. Use a new
+   major version for a breaking schema change. Merging that PR creates the
+   version tag and release; publication attaches the tested schema archive.
 
 ## Commit messages
 
@@ -95,3 +96,19 @@ exact finding, so any new secret still fails the scan.
 
 By contributing, you agree that your contributions are licensed under the
 [MIT License](LICENCE).
+
+## Release automation
+
+Configure `RELEASE_PLEASE_TOKEN` with Contents, Issues and Pull requests write
+permissions scoped to the participating repositories. Release PRs require
+maintainer review and all required checks; no bypass is granted to automation.
+The sole maintainer can merge after reviewing the diff and passing checks,
+without a separate approval. Restore independent code-owner approval when
+another trusted maintainer joins.
+The workflow reports an error until this credential is configured.
+
+Use reviewed `vX.Y.Z` releases, keep published tags and packages immutable, and
+pin container digests in deployments. Development builds use `edge` and SHA
+references; existing `latest` aliases stop updating. The
+[release handbook](https://kiongahq.github.io/docs/engineering/contributing/releases/)
+covers publication, dependency updates and rollback.
