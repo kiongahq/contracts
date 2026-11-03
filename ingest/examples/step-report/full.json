@@ -1,0 +1,11 @@
+{
+  "step": "train",
+  "status": "failed",
+  "message": "Traceback (most recent call last):\nValueError: bad input",
+  "attempt": 2,
+  "exit_code": 1,
+  "workload_kind": "docker",
+  "workload_id": "c0ffee",
+  "image_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "at": "2026-11-03T08:00:00Z"
+}

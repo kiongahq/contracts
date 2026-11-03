@@ -48,9 +48,11 @@ common structural mistakes are rejected. The ruff rule set is pinned in
 
 ## Change a contract
 
-1. Decide whether the change is compatible. Adding an optional field is compatible.
-   Removing or renaming a field, making a field required, or narrowing an allowed
-   value is breaking.
+1. Decide whether the change is compatible, using the table in
+   [docs/compatibility.md](docs/compatibility.md). Adding an optional field is
+   compatible. Removing or renaming a field, making a field required, narrowing an
+   allowed value, or tightening `additionalProperties` to `false` is breaking.
+   `tests/test_compatibility.py` fails on a breaking change to a published schema.
 2. For a compatible change, edit `pipeline/v1.schema.json` and extend
    `pipeline/examples/branched.kionga.yaml` if the example should show the new field.
    For a breaking change, add `pipeline/v2.schema.json` and leave `v1` published.
