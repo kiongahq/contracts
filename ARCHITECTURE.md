@@ -42,6 +42,12 @@ single mutations (a missing image, a bad node ID, a lowercase `dependson`, a sch
 without cron, a cron macro, too many retries, the wrong `kind`) and asserts that
 each one is rejected with an error that names the problem.
 
+### `agent-team/`
+
+Schemas, examples and templates for agent teams, and the normative authority,
+provenance and crash rules in its README. `tests/test_agent_team.py` checks that each
+invalid example fails for its stated reason and pins those rules.
+
 ### `pyproject.toml`, `requirements-dev.txt`
 
 Test configuration and the pinned ruff rule set (`E4`, `E7`, `E9`, `F`).

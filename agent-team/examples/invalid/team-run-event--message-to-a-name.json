@@ -1,0 +1,15 @@
+{
+  "target": "team-run-event",
+  "why": "A recorded message names the resolved worker ID.",
+  "path": "$.to",
+  "message": "does not match",
+  "document": {
+    "seq": 9,
+    "type": "worker.message",
+    "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "ts": "2026-11-04T12:00:06Z",
+    "from": "person",
+    "to": "bug-fixer",
+    "message_preview": "Focus on the parser."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "runtime": "runsc",
+  "runtime_verified": false,
+  "driver": "kubernetes",
+  "unsafe_runtime": false
+}

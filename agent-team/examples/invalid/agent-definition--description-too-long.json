@@ -1,0 +1,47 @@
+{
+  "target": "agent-definition",
+  "why": "Description is at most 1000 characters.",
+  "path": "$.description",
+  "message": "too long",
+  "document": {
+    "id": "agd-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "project_id": "prj-demo",
+    "revision": 1,
+    "name": "bug-fixer",
+    "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "instructions": "Fix one defect and prove it.",
+    "model": "llm",
+    "tools": [
+      {
+        "kind": "sandbox"
+      },
+      {
+        "kind": "git",
+        "repository": "https://github.com/o/r",
+        "connection": "apc-aaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "tool",
+        "ref": "lookup"
+      },
+      {
+        "kind": "connection",
+        "ref": "apc-aaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "knowledge",
+        "ref": "kb-aaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "dataset",
+        "ref": "ds-aaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "workspace": "sandbox",
+    "limits": {
+      "max_turns": 100,
+      "max_tokens": 200000,
+      "max_seconds": 3600
+    }
+  }
+}

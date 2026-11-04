@@ -1,0 +1,11 @@
+{
+  "target": "sandbox.exec_request",
+  "why": "Paths stay under /workspace.",
+  "path": "$.cwd",
+  "message": "does not match",
+  "document": {
+    "command": "pytest -q",
+    "cwd": "/workspace/../etc",
+    "timeout_seconds": 300
+  }
+}

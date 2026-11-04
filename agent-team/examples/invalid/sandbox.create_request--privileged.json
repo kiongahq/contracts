@@ -1,0 +1,13 @@
+{
+  "target": "sandbox.create_request",
+  "why": "The caller cannot request privileges.",
+  "path": "$",
+  "message": "privileged",
+  "document": {
+    "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+    "project_id": "prj-demo",
+    "image": "ghcr.io/kiongahq/sandbox@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "privileged": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "seq": 3,
+  "type": "worker.tool_call",
+  "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+  "ts": "2026-11-04T12:00:02Z",
+  "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+  "tool": "exec",
+  "tool_call_id": "c1",
+  "input_preview": "{\"command\":\"pytest -q\"}"
+}

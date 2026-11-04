@@ -1,0 +1,11 @@
+{
+  "target": "sandbox.git_push_request",
+  "why": "The name cannot contain traversal.",
+  "path": "$.branch",
+  "message": "does not match",
+  "document": {
+    "repository": "https://github.com/o/r",
+    "branch": "kionga/atr-aaaaaaaaaaaaaaaaaaaaaaaa/../../main",
+    "credential": "fixture"
+  }
+}

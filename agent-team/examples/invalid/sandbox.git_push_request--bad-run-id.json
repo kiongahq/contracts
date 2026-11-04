@@ -1,0 +1,11 @@
+{
+  "target": "sandbox.git_push_request",
+  "why": "The second segment is a run ID.",
+  "path": "$.branch",
+  "message": "does not match",
+  "document": {
+    "repository": "https://github.com/o/r",
+    "branch": "kionga/main/x",
+    "credential": "fixture"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "command": "pytest -q",
+  "cwd": "/workspace/repo",
+  "timeout_seconds": 300
+}

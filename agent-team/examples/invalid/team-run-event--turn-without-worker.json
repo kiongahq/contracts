@@ -1,0 +1,20 @@
+{
+  "target": "team-run-event",
+  "why": "Worker events name the worker.",
+  "path": "$",
+  "message": "'worker_id' is a required",
+  "document": {
+    "seq": 2,
+    "type": "worker.turn",
+    "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "ts": "2026-11-04T12:00:01Z",
+    "agent": "bug-fixer",
+    "turn": 1,
+    "duration_ms": 900,
+    "output_preview": "Reproducing first.",
+    "usage": {
+      "input_tokens": 300,
+      "output_tokens": 40
+    }
+  }
+}

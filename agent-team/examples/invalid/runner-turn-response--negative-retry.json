@@ -1,0 +1,13 @@
+{
+  "target": "runner-turn-response",
+  "why": "retry_after_seconds cannot be negative.",
+  "path": "$.error.retry_after_seconds",
+  "message": "minimum",
+  "document": {
+    "error": {
+      "code": "rate_limited",
+      "message": "Provider rate limit.",
+      "retry_after_seconds": -1
+    }
+  }
+}

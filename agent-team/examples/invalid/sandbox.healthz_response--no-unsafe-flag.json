@@ -1,0 +1,11 @@
+{
+  "target": "sandbox.healthz_response",
+  "why": "Health always states whether the runtime is unsafe.",
+  "path": "$",
+  "message": "'unsafe_runtime' is a required",
+  "document": {
+    "runtime": "runsc",
+    "runtime_verified": true,
+    "driver": "docker"
+  }
+}

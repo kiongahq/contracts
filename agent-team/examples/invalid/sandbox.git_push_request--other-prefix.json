@@ -1,0 +1,11 @@
+{
+  "target": "sandbox.git_push_request",
+  "why": "Only the kionga/<run-id>/<name> namespace.",
+  "path": "$.branch",
+  "message": "does not match",
+  "document": {
+    "repository": "https://github.com/o/r",
+    "branch": "feature/x",
+    "credential": "fixture"
+  }
+}

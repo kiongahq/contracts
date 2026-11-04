@@ -1,0 +1,28 @@
+{
+  "target": "team",
+  "why": "max_workers_total is at most 50.",
+  "path": "$.limits.max_workers_total",
+  "message": "maximum",
+  "document": {
+    "id": "agt-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "project_id": "prj-demo",
+    "revision": 1,
+    "name": "code-change",
+    "description": "Makes code changes.",
+    "coordinator": {
+      "instructions": "Lead the change.",
+      "model": "llm"
+    },
+    "members": [
+      "agd-aaaaaaaaaaaaaaaaaaaaaaaa",
+      "agd-bbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "brief": "Shared rules.",
+    "limits": {
+      "max_workers_total": 51,
+      "max_concurrent_workers": 5,
+      "max_tokens": 2000000,
+      "max_seconds": 14400
+    }
+  }
+}

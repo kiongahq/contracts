@@ -1,0 +1,47 @@
+{
+  "target": "agent-definition",
+  "why": "Sandbox and git grants require workspace: sandbox.",
+  "path": "$.workspace",
+  "message": "'sandbox' was expected",
+  "document": {
+    "id": "agd-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "project_id": "prj-demo",
+    "revision": 1,
+    "name": "bug-fixer",
+    "description": "Use for one defect.",
+    "instructions": "Fix one defect and prove it.",
+    "model": "llm",
+    "tools": [
+      {
+        "kind": "sandbox"
+      },
+      {
+        "kind": "git",
+        "repository": "https://github.com/o/r",
+        "connection": "apc-aaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "tool",
+        "ref": "lookup"
+      },
+      {
+        "kind": "connection",
+        "ref": "apc-aaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "knowledge",
+        "ref": "kb-aaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "dataset",
+        "ref": "ds-aaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "workspace": "none",
+    "limits": {
+      "max_turns": 100,
+      "max_tokens": 200000,
+      "max_seconds": 3600
+    }
+  }
+}

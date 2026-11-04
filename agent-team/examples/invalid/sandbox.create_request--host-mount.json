@@ -1,0 +1,15 @@
+{
+  "target": "sandbox.create_request",
+  "why": "No host mounts can be requested.",
+  "path": "$",
+  "message": "mounts",
+  "document": {
+    "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+    "project_id": "prj-demo",
+    "image": "ghcr.io/kiongahq/sandbox@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "mounts": [
+      "/var/run/docker.sock:/var/run/docker.sock"
+    ]
+  }
+}

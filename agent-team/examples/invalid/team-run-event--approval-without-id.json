@@ -1,0 +1,16 @@
+{
+  "target": "team-run-event",
+  "why": "worker.waiting_approval carries approval_id.",
+  "path": "$",
+  "message": "'approval_id' is a required",
+  "document": {
+    "seq": 8,
+    "type": "worker.waiting_approval",
+    "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "ts": "2026-11-04T12:00:05Z",
+    "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+    "tool": "git_push",
+    "tool_call_id": "c3",
+    "status": "waiting_approval"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "target": "runner-turn-response",
+  "why": "A result reports usage.",
+  "path": "$",
+  "message": "not valid under any",
+  "document": {
+    "content": "Done.",
+    "tool_calls": [],
+    "model": "llm"
+  }
+}

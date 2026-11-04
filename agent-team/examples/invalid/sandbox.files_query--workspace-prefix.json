@@ -1,0 +1,9 @@
+{
+  "target": "sandbox.files_query",
+  "why": "A sibling that shares the prefix is outside.",
+  "path": "$.path",
+  "message": "does not match",
+  "document": {
+    "path": "/workspace-other/a"
+  }
+}

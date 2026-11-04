@@ -1,0 +1,483 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kionga.dev/schemas/agent-team/sandbox-api/v1.json",
+  "title": "Kionga sandbox manager API",
+  "description": "Bodies of the sandbox manager's internal HTTP API, authenticated by Bearer KIONGA_SANDBOX_TOKEN. This file is a catalog and not itself a document: validate against the $defs entry that x-operations names. Every failure uses #/$defs/error. Closed contract: there is deliberately no field for environment variables, mounts, runtime, privileges or network.",
+  "type": "object",
+  "additionalProperties": false,
+  "x-operations": [
+    {
+      "method": "POST",
+      "path": "/sandboxes",
+      "request": "#/$defs/create_request",
+      "response": "#/$defs/create_response"
+    },
+    {
+      "method": "POST",
+      "path": "/sandboxes/{id}/exec",
+      "request": "#/$defs/exec_request",
+      "response": "#/$defs/exec_response"
+    },
+    {
+      "method": "GET",
+      "path": "/sandboxes/{id}/files",
+      "query": "#/$defs/files_query",
+      "response": "#/$defs/files_get_response"
+    },
+    {
+      "method": "PUT",
+      "path": "/sandboxes/{id}/files",
+      "query": "#/$defs/files_query",
+      "body": "raw bytes",
+      "response": "#/$defs/files_put_response"
+    },
+    {
+      "method": "POST",
+      "path": "/sandboxes/{id}/git/clone",
+      "request": "#/$defs/git_clone_request",
+      "response": "#/$defs/git_clone_response"
+    },
+    {
+      "method": "POST",
+      "path": "/sandboxes/{id}/git/push",
+      "request": "#/$defs/git_push_request",
+      "response": "#/$defs/git_push_response"
+    },
+    {
+      "method": "GET",
+      "path": "/sandboxes/{id}/git/diff",
+      "response": "#/$defs/git_diff_response"
+    },
+    {
+      "method": "DELETE",
+      "path": "/sandboxes/{id}",
+      "response_status": 204
+    },
+    {
+      "method": "GET",
+      "path": "/healthz",
+      "response": "#/$defs/healthz_response"
+    }
+  ],
+  "x-environment": {
+    "KIONGA_SANDBOX_URL": "Gateway and deploy: base URL of the sandbox manager.",
+    "KIONGA_SANDBOX_TOKEN": "Bearer token, compared in constant time. The manager refuses to start without it.",
+    "KIONGA_SANDBOX_DRIVER": "docker or kubernetes.",
+    "KIONGA_SANDBOX_NAMESPACE": "kubernetes driver: namespace for sandbox and git helper pods.",
+    "KIONGA_SANDBOX_STORAGE_CLASS": "kubernetes driver: storage class for /workspace volumes.",
+    "KIONGA_SANDBOX_RUNTIME": "Container runtime, default runsc. Verified at startup and before each create.",
+    "KIONGA_SANDBOX_ALLOW_UNSAFE_RUNTIME": "1 permits another runtime for local development. Refused when KIONGA_ENVIRONMENT is production.",
+    "KIONGA_SANDBOX_IMAGES": "Digest-pinned image allowlist.",
+    "KIONGA_SANDBOX_GIT_HOSTS": "Hosts that git operations may reach.",
+    "KIONGA_SANDBOX_TTL_SECONDS": "Age at which the reaper removes a sandbox by label, default 86400."
+  },
+  "x-labels": {
+    "kionga.dev/sandbox-role": {
+      "git-helper": "Set on every git helper pod."
+    }
+  },
+  "$defs": {
+    "create_request": {
+      "type": "object",
+      "description": "Idempotent on run_id and worker_id.",
+      "required": [
+        "run_id",
+        "worker_id",
+        "project_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "pattern": "^atr-[a-f0-9]{24}$"
+        },
+        "worker_id": {
+          "type": "string",
+          "pattern": "^atw-[a-f0-9]{24}$"
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "image": {
+          "type": "string",
+          "maxLength": 512,
+          "pattern": "^[a-z0-9][a-z0-9._:/-]*@sha256:[a-f0-9]{64}$",
+          "description": "Digest-pinned, and it must also be in KIONGA_SANDBOX_IMAGES."
+        }
+      }
+    },
+    "create_response": {
+      "type": "object",
+      "required": [
+        "id",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+        },
+        "status": {
+          "enum": [
+            "creating",
+            "running"
+          ]
+        }
+      }
+    },
+    "exec_request": {
+      "type": "object",
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Run by a shell inside the sandbox."
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^(\\.|/workspace|/workspace/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+)(/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+))*|([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+)(/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+))*)/?$",
+          "description": "A path under /workspace, absolute or relative to it, with no '..' segment. This is the structural check only: the manager resolves the path inside the sandbox and rejects symlink escapes."
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1800,
+          "default": 120,
+          "description": "The manager kills the process group at the limit."
+        }
+      }
+    },
+    "exec_response": {
+      "type": "object",
+      "required": [
+        "exit_code",
+        "stdout",
+        "stderr",
+        "truncated",
+        "timed_out",
+        "duration_ms"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "exit_code": {
+          "type": "integer",
+          "description": "Negative or above 128 when the process was killed."
+        },
+        "stdout": {
+          "type": "string",
+          "maxLength": 65536,
+          "description": "Untrusted output, capped at 64 KiB."
+        },
+        "stderr": {
+          "type": "string",
+          "maxLength": 65536,
+          "description": "Untrusted output, capped at 64 KiB."
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "timed_out": {
+          "type": "boolean"
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "files_query": {
+      "type": "object",
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^(\\.|/workspace|/workspace/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+)(/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+))*|([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+)(/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+))*)/?$",
+          "description": "A path under /workspace, absolute or relative to it, with no '..' segment. This is the structural check only: the manager resolves the path inside the sandbox and rejects symlink escapes."
+        }
+      }
+    },
+    "files_get_response": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "A file.",
+          "required": [
+            "content",
+            "truncated"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "content": {
+              "type": "string"
+            },
+            "truncated": {
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "A directory listing.",
+          "required": [
+            "entries"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "entries": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "type"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "type": {
+                    "enum": [
+                      "file",
+                      "directory",
+                      "symlink",
+                      "other"
+                    ]
+                  },
+                  "size": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            },
+            "truncated": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "files_put_response": {
+      "type": "object",
+      "required": [
+        "path",
+        "bytes_written"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^(\\.|/workspace|/workspace/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+)(/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+))*|([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+)(/([^/.\\x00][^/\\x00]*|\\.[^/.\\x00][^/\\x00]*|\\.\\.[^/\\x00]+))*)/?$",
+          "description": "A path under /workspace, absolute or relative to it, with no '..' segment. This is the structural check only: the manager resolves the path inside the sandbox and rejects symlink escapes."
+        },
+        "bytes_written": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "git_clone_request": {
+      "type": "object",
+      "required": [
+        "repository"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^https://[A-Za-z0-9][A-Za-z0-9.-]*(:[0-9]{1,5})?(/[A-Za-z0-9_~+-][A-Za-z0-9._~+-]*)+/?$",
+          "description": "An HTTPS repository URL. No user information, query or fragment, so a credential cannot travel in the URL. The host must also be in KIONGA_SANDBOX_GIT_HOSTS, which the manager checks."
+        },
+        "ref": {
+          "type": "string",
+          "maxLength": 255,
+          "pattern": "^[A-Za-z0-9_]+([./-][A-Za-z0-9_]+)*$",
+          "description": "A branch, tag or commit. It cannot start with '-' or contain '..', so it cannot be read as an option or a range."
+        },
+        "credential": {
+          "type": "string",
+          "minLength": 1,
+          "writeOnly": true,
+          "description": "Supplied by the gateway from the connection for this one call. The manager passes it through GIT_ASKPASS on a tmpfs file, never in argv, environment dumps, logs or the workspace."
+        }
+      }
+    },
+    "git_clone_response": {
+      "type": "object",
+      "required": [
+        "commit"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40,64}$"
+        }
+      }
+    },
+    "git_push_request": {
+      "type": "object",
+      "required": [
+        "repository",
+        "branch",
+        "credential"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^https://[A-Za-z0-9][A-Za-z0-9.-]*(:[0-9]{1,5})?(/[A-Za-z0-9_~+-][A-Za-z0-9._~+-]*)+/?$",
+          "description": "An HTTPS repository URL. No user information, query or fragment, so a credential cannot travel in the URL. The host must also be in KIONGA_SANDBOX_GIT_HOSTS, which the manager checks."
+        },
+        "branch": {
+          "type": "string",
+          "maxLength": 255,
+          "pattern": "^kionga/atr-[a-f0-9]{24}/[A-Za-z0-9]+([._-][A-Za-z0-9]+)*$",
+          "description": "kionga/<run-id>/<name> only. Never the default branch, never force, never delete. The manager also checks that the run ID is this sandbox's run."
+        },
+        "credential": {
+          "type": "string",
+          "minLength": 1,
+          "writeOnly": true,
+          "description": "Supplied by the gateway from the connection for this one call. The manager passes it through GIT_ASKPASS on a tmpfs file, never in argv, environment dumps, logs or the workspace."
+        }
+      }
+    },
+    "git_push_response": {
+      "type": "object",
+      "required": [
+        "branch",
+        "commit"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "branch": {
+          "type": "string"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40,64}$"
+        }
+      }
+    },
+    "git_diff_response": {
+      "type": "object",
+      "required": [
+        "diff",
+        "truncated"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "diff": {
+          "type": "string"
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "healthz_response": {
+      "type": "object",
+      "required": [
+        "runtime",
+        "runtime_verified",
+        "driver",
+        "unsafe_runtime"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_verified": {
+          "type": "boolean",
+          "description": "False means creates return 503 sandbox_unavailable."
+        },
+        "driver": {
+          "enum": [
+            "docker",
+            "kubernetes"
+          ]
+        },
+        "unsafe_runtime": {
+          "type": "boolean",
+          "description": "True when KIONGA_SANDBOX_ALLOW_UNSAFE_RUNTIME permits a runtime other than the default."
+        }
+      }
+    },
+    "run_view_sandbox": {
+      "type": "object",
+      "description": "The optional sandbox field of a team run view. The console uses it for its unavailable and unsafe-runtime banner.",
+      "required": [
+        "available"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_verified": {
+          "type": "boolean"
+        },
+        "driver": {
+          "enum": [
+            "docker",
+            "kubernetes"
+          ]
+        },
+        "unsafe_runtime": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "description": "The same shape as gateway API errors. It must never include a credential.",
+      "required": [
+        "error",
+        "message"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "error": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "A code such as sandbox_unavailable, not_found, path_rejected, host_not_allowed or branch_rejected."
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    }
+  }
+}

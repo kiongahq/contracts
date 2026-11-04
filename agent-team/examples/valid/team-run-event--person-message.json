@@ -1,0 +1,9 @@
+{
+  "seq": 9,
+  "type": "worker.message",
+  "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+  "ts": "2026-11-04T12:00:06Z",
+  "from": "person",
+  "to": "atw-cccccccccccccccccccccccc",
+  "message_preview": "Focus on the parser."
+}
