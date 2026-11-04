@@ -109,6 +109,25 @@ def test_limit_bounds_are_exact(target, field, low, high):
         assert (errors(schema_target, document) == []) is ok, (field, value)
 
 
+@pytest.mark.parametrize("target, field, default", [
+    ("agent-definition", "max_turns", 100),
+    ("agent-definition", "max_tokens", 1_000_000),
+    ("agent-definition", "max_seconds", 3600),
+    ("team", "max_workers_total", 20),
+    ("team", "max_concurrent_workers", 5),
+    ("team", "max_tokens", 5_000_000),
+    ("team", "max_seconds", 14_400),
+])
+def test_limit_defaults_match_the_gateway(target, field, default):
+    assert SCHEMAS[target]["$defs"]["limits"]["properties"][field]["default"] == default
+
+
+@pytest.mark.parametrize("target", ["agent-definition", "team"])
+def test_token_budgets_state_what_they_count(target):
+    description = SCHEMAS[target]["$defs"]["limits"]["properties"]["max_tokens"]["description"]
+    assert "real provider usage" in description and "re-sent" in description
+
+
 def test_definition_workspace_rule_applies_to_both_grants():
     for grant in ({"kind": "sandbox"}, {"kind": "git", "repository": "https://github.com/o/r"}):
         document = {"name": "a", "description": "d", "instructions": "i", "tools": [grant]}
