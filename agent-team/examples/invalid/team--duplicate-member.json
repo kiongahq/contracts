@@ -4,7 +4,7 @@
   "path": "$.members",
   "message": "non-unique",
   "document": {
-    "id": "agt-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "id": "atm-aaaaaaaaaaaaaaaaaaaaaaaa",
     "project_id": "prj-demo",
     "revision": 1,
     "name": "code-change",
@@ -14,8 +14,8 @@
       "model": "llm"
     },
     "members": [
-      "agd-aaaaaaaaaaaaaaaaaaaaaaaa",
-      "agd-aaaaaaaaaaaaaaaaaaaaaaaa"
+      "adf-aaaaaaaaaaaaaaaaaaaaaaaa",
+      "adf-aaaaaaaaaaaaaaaaaaaaaaaa"
     ],
     "brief": "Shared rules.",
     "limits": {

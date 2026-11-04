@@ -4,7 +4,7 @@
   "path": "$.tools[1]",
   "message": "not valid under any",
   "document": {
-    "id": "agd-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "id": "adf-aaaaaaaaaaaaaaaaaaaaaaaa",
     "project_id": "prj-demo",
     "revision": 1,
     "name": "bug-fixer",
@@ -18,7 +18,7 @@
       {
         "kind": "git",
         "repository": "http://github.com/o/r",
-        "connection": "apc-aaaaaaaaaaaaaaaaaaaaaaaa"
+        "connection": "api-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
       {
         "kind": "tool",
@@ -26,7 +26,7 @@
       },
       {
         "kind": "connection",
-        "ref": "apc-aaaaaaaaaaaaaaaaaaaaaaaa"
+        "ref": "api-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
       {
         "kind": "knowledge",

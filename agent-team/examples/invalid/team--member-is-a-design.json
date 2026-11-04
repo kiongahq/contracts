@@ -4,7 +4,7 @@
   "path": "$.members[0]",
   "message": "does not match",
   "document": {
-    "id": "agt-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "id": "atm-aaaaaaaaaaaaaaaaaaaaaaaa",
     "project_id": "prj-demo",
     "revision": 1,
     "name": "code-change",
@@ -15,7 +15,7 @@
     },
     "members": [
       "agd-aaaaaaaaaaaaaaaaaaaaaaaa",
-      "agd-bbbbbbbbbbbbbbbbbbbbbbbb"
+      "adf-bbbbbbbbbbbbbbbbbbbbbbbb"
     ],
     "brief": "Shared rules.",
     "limits": {

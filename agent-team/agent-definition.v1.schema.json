@@ -13,7 +13,7 @@
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^agd-[a-f0-9]{24}$"
+      "pattern": "^adf-[a-f0-9]{24}$"
     },
     "project_id": {
       "type": "string",

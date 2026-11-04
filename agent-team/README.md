@@ -10,8 +10,8 @@ produces validates.
 
 | File | What it defines |
 | --- | --- |
-| `agent-definition.v1.schema.json` | A reusable agent (`agd-…`), `/api/v1/agent-definitions`. |
-| `team.v1.schema.json` | A coordinator, members, brief and limits (`agt-…`), `/api/v1/agent-teams`. |
+| `agent-definition.v1.schema.json` | A reusable agent (`adf-…`), `/api/v1/agent-definitions`. |
+| `team.v1.schema.json` | A coordinator, members, brief and limits (`atm-…`), `/api/v1/agent-teams`. |
 | `team-run-event.v1.schema.json` | One entry in a team run's event log. |
 | `runner-turn-request.v1.schema.json`, `runner-turn-response.v1.schema.json` | `POST /agent-turns` on the designer runner: one model call, stored nowhere. |
 | `sandbox-api.v1.schema.json` | The sandbox manager's HTTP bodies, operations, environment and labels. Validate against the `$defs` entry that `x-operations` names. |

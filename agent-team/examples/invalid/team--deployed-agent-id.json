@@ -14,8 +14,8 @@
       "model": "llm"
     },
     "members": [
-      "agd-aaaaaaaaaaaaaaaaaaaaaaaa",
-      "agd-bbbbbbbbbbbbbbbbbbbbbbbb"
+      "adf-aaaaaaaaaaaaaaaaaaaaaaaa",
+      "adf-bbbbbbbbbbbbbbbbbbbbbbbb"
     ],
     "brief": "Shared rules.",
     "limits": {

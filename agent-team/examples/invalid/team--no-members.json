@@ -4,7 +4,7 @@
   "path": "$.members",
   "message": "non-empty",
   "document": {
-    "id": "agt-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "id": "atm-aaaaaaaaaaaaaaaaaaaaaaaa",
     "project_id": "prj-demo",
     "revision": 1,
     "name": "code-change",

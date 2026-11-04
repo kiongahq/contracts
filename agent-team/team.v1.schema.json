@@ -13,7 +13,7 @@
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^agt-[a-f0-9]{24}$"
+      "pattern": "^atm-[a-f0-9]{24}$"
     },
     "project_id": {
       "type": "string",
@@ -53,7 +53,7 @@
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "pattern": "^agd-[a-f0-9]{24}$"
+        "pattern": "^adf-[a-f0-9]{24}$"
       },
       "description": "Agent definition IDs in this project; the gateway checks that they exist."
     },

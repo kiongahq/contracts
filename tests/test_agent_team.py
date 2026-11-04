@@ -262,7 +262,7 @@ def test_template_validates_and_instantiates(name):
         assert "id" not in agent, "a template agent gets its ID when it is created"
         assert errors("agent-definition", agent) == []
     team = copy.deepcopy(template["team"])
-    team["members"] = ["agd-" + format(index, "024x") for index in range(len(team["members"]))]
+    team["members"] = ["adf-" + format(index, "024x") for index in range(len(team["members"]))]
     assert errors("team", team) == []
 
 
