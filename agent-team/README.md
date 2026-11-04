@@ -24,6 +24,10 @@ IDs: definitions `adf-`, teams `atm-`, runs `atr-`, workers `atw-`, each followe
 hex characters. Connection references use `api-`. `agd-` (agent designs) and `agt-`
 (deployed agents) are other resources and are rejected here.
 
+Definitions and teams use optimistic concurrency. An update body must carry the current
+`revision`; a stale or missing one returns 409 `revision_conflict` with the latest
+document. A create body has no `revision`.
+
 These are closed contracts: a reader rejects a field the schema does not list. A new
 field is added here and released before any writer emits it.
 

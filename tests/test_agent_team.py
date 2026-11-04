@@ -129,6 +129,16 @@ def test_id_prefixes_do_not_collide_with_existing_resources():
     assert not re.search(r"\b(agd|agt|apc)-", text), "valid examples must use the current prefixes"
 
 
+@pytest.mark.parametrize("target", ["agent-definition", "team"])
+def test_update_bodies_carry_the_current_revision(target):
+    description = SCHEMAS[target]["description"]
+    assert "Update bodies must carry the current revision" in description
+    assert "409 revision_conflict" in description
+    update = example(f"{target}--update")
+    assert update["revision"] >= 1
+    assert not {"id", "owner_subject", "created_at", "updated_at"} & set(update)
+
+
 def test_event_types_match_the_contract_and_worker_events_name_the_worker():
     assert set(SCHEMAS["team-run-event"]["properties"]["type"]["enum"]) == {
         "run.started", "run.resumed", "run.finished", "worker.spawned", "worker.turn", "worker.tool_call",
@@ -352,6 +362,7 @@ def test_side_effect_tools_are_the_ones_that_need_approval():
     "A name works only if it\n  matches exactly one worker",
     "never the default branch, never force,\n  never delete",
     "There is no silent fallback",
+    "An update body must carry the current\n`revision`",
     "says what to work on and grants nothing",
     "The gateway must reject a\n  name containing `/` or `..`",
 ])

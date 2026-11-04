@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://kionga.dev/schemas/agent-team/team/v1.json",
   "title": "Kionga agent team",
-  "description": "A coordinator and its member agents, stored by the gateway under /api/v1/agent-teams. A run snapshots the team and its member definitions, so later edits never change a running team. Closed contract.",
+  "description": "A coordinator and its member agents, stored by the gateway under /api/v1/agent-teams. Create bodies carry project_id and omit the server-assigned fields (id, revision, owner_subject, created_at, updated_at). Update bodies must carry the current revision, which the gateway compares for optimistic concurrency: a stale or missing revision returns 409 revision_conflict with the latest document. They omit id, owner_subject, created_at and updated_at, and may repeat project_id, which cannot change. Stored documents carry all of these and every defaulted field. A run snapshots the team and its member definitions, so later edits never change a running team. Closed contract.",
   "type": "object",
   "required": [
     "name",
