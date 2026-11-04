@@ -120,6 +120,14 @@ def test_definition_workspace_rule_applies_to_both_grants():
     assert errors("agent-definition", resource) == [], "non-sandbox teams need no workspace"
 
 
+def test_id_prefixes_do_not_collide_with_existing_resources():
+    assert SCHEMAS["agent-definition"]["properties"]["id"]["pattern"].startswith("^adf-")
+    assert SCHEMAS["team"]["properties"]["id"]["pattern"].startswith("^atm-")
+    assert SCHEMAS["team"]["properties"]["members"]["items"]["pattern"].startswith("^adf-")
+    text = "".join(path.read_text() for path in VALID)
+    assert not re.search(r"\b(agd|agt|apc)-", text), "valid examples must use the current prefixes"
+
+
 def test_event_types_match_the_contract_and_worker_events_name_the_worker():
     assert set(SCHEMAS["team-run-event"]["properties"]["type"]["enum"]) == {
         "run.started", "run.resumed", "run.finished", "worker.spawned", "worker.turn", "worker.tool_call",
@@ -231,6 +239,12 @@ def mentions(text, names):
     return {name for name in names if re.search(rf"\b{name}\b", text)}
 
 
+def test_template_push_instruction_uses_the_short_name():
+    bug_fixer = next(a for a in TEMPLATES["code-change"]["agents"] if a["name"] == "bug-fixer")
+    assert "short descriptive name" in bug_fixer["instructions"]
+    assert "with no / or .. in it" in bug_fixer["instructions"]
+
+
 def test_required_templates_exist():
     assert set(TEMPLATES) == {"code-change", "research"}
     assert TEMPLATES["code-change"]["team"]["members"] == ["bug-fixer", "reviewer"]
@@ -332,6 +346,8 @@ def test_side_effect_tools_are_the_ones_that_need_approval():
     "A name works only if it\n  matches exactly one worker",
     "never the default branch, never force,\n  never delete",
     "There is no silent fallback",
+    "says what to work on and grants nothing",
+    "The gateway must reject a\n  name containing `/` or `..`",
 ])
 def test_readme_states_the_normative_rule(rule):
     assert rule in README

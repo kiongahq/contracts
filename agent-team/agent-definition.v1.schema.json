@@ -171,7 +171,7 @@
             },
             "connection": {
               "type": "string",
-              "pattern": "^[a-z]+-[A-Za-z0-9]+$",
+              "pattern": "^api-[a-f0-9]+$",
               "description": "The connection that supplies the credential, resolved by the gateway per call. A grant without one can clone public repositories and cannot push."
             }
           }
@@ -208,7 +208,7 @@
             },
             "ref": {
               "type": "string",
-              "pattern": "^[a-z]+-[A-Za-z0-9]+$"
+              "pattern": "^api-[a-f0-9]+$"
             }
           }
         },
