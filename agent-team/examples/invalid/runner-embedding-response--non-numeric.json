@@ -1,0 +1,11 @@
+{
+  "target": "runner-embedding-response",
+  "why": "A vector holds numbers.",
+  "path": "$.vector[0]",
+  "message": "not of type",
+  "document": {
+    "vector": [
+      "0.5"
+    ]
+  }
+}

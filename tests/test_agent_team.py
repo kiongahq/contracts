@@ -68,7 +68,8 @@ def test_schema_is_well_formed_closed_and_portable(name):
 
 def test_examples_cover_every_contract():
     targets = {path.stem.split("--")[0] for path in VALID}
-    assert {"agent-definition", "team", "team-run-event", "runner-turn-request", "runner-turn-response"} <= targets
+    assert {"agent-definition", "team", "team-run-event", "runner-turn-request", "runner-turn-response",
+            "runner-embedding-request", "runner-embedding-response"} <= targets
     operations = {op[key].rsplit("/", 1)[1] for op in SANDBOX["x-operations"]
                   for key in ("request", "response", "query") if key in op}
     assert {f"sandbox.{name}" for name in operations} <= targets
@@ -157,6 +158,11 @@ def test_runner_request_messages_are_framed_by_the_gateway():
 def test_runner_error_codes_are_the_four_the_gateway_handles():
     codes = SCHEMAS["runner-turn-response"]["$defs"]["error"]["properties"]["code"]["enum"]
     assert set(codes) == {"rate_limited", "provider_unavailable", "invalid_request", "model_error"}
+
+
+@pytest.mark.parametrize("dimensions,ok", [(1, True), (4096, True), (0, False), (4097, False), (1.5, False), ("8", False)])
+def test_embedding_dimensions_match_the_knowledge_base_limits(dimensions, ok):
+    assert (errors("runner-embedding-request", {"text": "query", "dimensions": dimensions}) == []) is ok, dimensions
 
 
 def test_sandbox_operations_are_exactly_the_contract():

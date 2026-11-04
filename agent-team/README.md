@@ -14,6 +14,7 @@ produces validates.
 | `team.v1.schema.json` | A coordinator, members, brief and limits (`atm-…`), `/api/v1/agent-teams`. |
 | `team-run-event.v1.schema.json` | One entry in a team run's event log. |
 | `runner-turn-request.v1.schema.json`, `runner-turn-response.v1.schema.json` | `POST /agent-turns` on the designer runner: one model call, stored nowhere. |
+| `runner-embedding-request.v1.schema.json`, `runner-embedding-response.v1.schema.json` | `POST /embeddings` on the designer runner: a query vector, stored nowhere. |
 | `sandbox-api.v1.schema.json` | The sandbox manager's HTTP bodies, operations, environment and labels. Validate against the `$defs` entry that `x-operations` names. |
 | `template.v1.schema.json`, `templates/*.json` | Starter teams `code-change` and `research`. |
 | `examples/valid/<target>--<case>.json` | Documents that must validate. The target is a schema, or `sandbox.<def>`. |
@@ -155,6 +156,12 @@ characters. All sandbox output is untrusted.
 200 with an `error` body. Messages must never contain credentials, and the runner must
 log no message content. `rate_limited` and `provider_unavailable` do not consume
 `max_turns`. `turn` starts at 1.
+
+`POST /embeddings` turns `{text, dimensions}` into `{vector}` under the same bearer token,
+with the SDK hashing embedder that designer knowledge nodes use, so a query vector matches
+what is indexed with that embedder. `dimensions` must be the knowledge base's own. A
+malformed body is HTTP 422 with `{"error": {"code": "invalid_request", "message": ...}}`, a
+missing credential is HTTP 401, and the runner must not log the text.
 
 ## Sandbox manager
 
