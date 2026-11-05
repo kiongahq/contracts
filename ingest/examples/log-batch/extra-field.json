@@ -1,0 +1,16 @@
+{
+  "batch_id": "b-42",
+  "entries": [
+    {
+      "ts": "2026-11-03T08:00:01Z",
+      "node": "extract",
+      "attempt": 1,
+      "stream": "stderr",
+      "message": "retrying download",
+      "sequence": 17,
+      "context": {
+        "url_host": "example.com"
+      }
+    }
+  ]
+}

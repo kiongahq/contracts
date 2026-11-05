@@ -1,0 +1,11 @@
+{
+  "step": "train",
+  "status": "succeeded",
+  "attempt": 1,
+  "exit_code": 0,
+  "duration_ms": 1532,
+  "resource_usage": {
+    "cpu_seconds": 4.2,
+    "peak_memory_bytes": 104857600
+  }
+}

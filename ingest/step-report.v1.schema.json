@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kionga.dev/schemas/ingest/step-report/v1.json",
+  "title": "Kionga pipeline step report",
+  "description": "Body of POST /api/v1/pipelines/runs/{id}/steps, sent by the executing pipeline at every step transition. Open contract (see docs/compatibility.md): the gateway accepts and ignores properties it does not know, so a newer producer never fails against an older gateway.",
+  "x-kionga-policy": "open",
+  "type": "object",
+  "required": [
+    "step",
+    "status"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "step": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Node ID of the step in the pipeline definition."
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "running",
+        "succeeded",
+        "failed",
+        "skipped"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "description": "Free text. The gateway logs the last line of a non-success message."
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Attempt number of this transition; 0 or absent when unknown."
+    },
+    "exit_code": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "workload_kind": {
+      "type": "string",
+      "description": "Where the step ran, for example docker or k8s-pod."
+    },
+    "workload_id": {
+      "type": "string"
+    },
+    "image_digest": {
+      "type": "string"
+    },
+    "at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "When the transition happened, RFC 3339 UTC."
+    }
+  }
+}

@@ -10,10 +10,12 @@ released packages and this repository. A contract here is a JSON Schema (draft
 2020-12) for a document that more than one component reads or writes, plus one
 canonical example of that document.
 
-There is one contract today: the pipeline definition, `apiVersion: kionga.dev/v1`,
-`kind: Pipeline`. Users write it as YAML or build it in the console's form
-editor, and the platform gateway validates it, stores a canonical rendering and
-runs it.
+The pipeline definition, `apiVersion: kionga.dev/v1`, `kind: Pipeline`, is the
+oldest contract. Users write it as YAML or build it in the console's form editor,
+and the platform gateway validates it, stores a canonical rendering and runs it.
+`agent-graph/` holds the native agent contracts, and `ingest/` holds the payloads
+that producers post to the gateway. [docs/compatibility.md](docs/compatibility.md)
+classifies each one as open or closed to unknown fields.
 
 ## Code map
 
@@ -27,6 +29,21 @@ steps with `dependsOn`, `when`, `retry`, `resources` and `timeoutSeconds`),
 `source` and `executionMode` (`prefect` or `functions`). Structural objects set
 `additionalProperties: false`, so an unknown or misspelled field fails; free-form
 maps such as `parameters` only constrain their key names.
+
+### `ingest/`
+
+Open contracts for producer-to-gateway ingest: `step-report.v1` (the body of
+`POST /api/v1/pipelines/runs/{id}/steps`), `log-batch.v1`
+(`POST /api/v1/pipelines/runs/{id}/logs`) and `trace.v1` (`POST /api/v1/traces`).
+Each sets `additionalProperties: true` and `"x-kionga-policy": "open"`.
+`ingest/examples/<contract>/` holds valid fixtures; `extra-field.json` carries
+fields the schema does not list, and the gateway must accept it.
+
+### `docs/compatibility.md`
+
+The open versus closed policy and the table of compatible and breaking changes.
+`tests/test_compatibility.py` compares every schema with the latest release tag
+and fails on a breaking change.
 
 ### `pipeline/examples/branched.kionga.yaml`
 

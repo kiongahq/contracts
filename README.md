@@ -17,6 +17,12 @@ definitions:
 - `agent-graph/`: native Agent Designer graphs (schema version 2), the component
   registry with typed ports, run events, published agent versions and starter
   templates. See [agent-graph/README.md](agent-graph/README.md).
+- `ingest/`: what runners, the agent runtime and the SDK send to the gateway:
+  pipeline step reports, run log batches and agent traces. These contracts are
+  open: the gateway ignores fields it does not know.
+
+[docs/compatibility.md](docs/compatibility.md) defines which contracts are open or
+closed to unknown fields and which schema changes are breaking.
 
 The [platform](https://github.com/kiongahq/platform) pins this repository as a Git
 submodule and validates every pipeline definition before it stores or runs it.
