@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kionga.dev/schemas/ingest/log-batch/v1.json",
+  "title": "Kionga pipeline run log batch",
+  "description": "Body of POST /api/v1/pipelines/runs/{id}/logs, runner output for one run. Entries are attributed to the run's project, never to caller-supplied scope. Open contract (see docs/compatibility.md): the gateway accepts and ignores properties it does not know, so a newer producer never fails against an older gateway.",
+  "x-kionga-policy": "open",
+  "type": "object",
+  "required": [
+    "entries"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "entries": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": [
+        "node",
+        "message"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "ts": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "node": {
+          "type": "string"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "workload_kind": {
+          "type": "string"
+        },
+        "workload_id": {
+          "type": "string"
+        },
+        "stream": {
+          "type": "string",
+          "description": "stdout or stderr. Without a known severity, stderr is logged as warn."
+        },
+        "severity": {
+          "type": "string",
+          "description": "debug, info, warn or error. The gateway logs any other value as info (warn for stderr)."
+        },
+        "message": {
+          "type": "string",
+          "description": "The gateway truncates messages longer than 8 KiB."
+        },
+        "context": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "Free-form structured fields."
+        }
+      }
+    }
+  }
+}
