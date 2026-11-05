@@ -1,0 +1,372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kionga.dev/schemas/agent-team/team-run-event/v1.json",
+  "title": "Kionga team run event",
+  "description": "One entry in a team run's paged event log, served as a polling page and as Server-Sent Events. Previews are redacted and at most 2000 characters. Closed contract.",
+  "type": "object",
+  "required": [
+    "seq",
+    "type",
+    "run_id",
+    "ts"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Strictly increasing within a run."
+    },
+    "type": {
+      "enum": [
+        "run.started",
+        "run.resumed",
+        "run.finished",
+        "worker.spawned",
+        "worker.turn",
+        "worker.tool_call",
+        "worker.tool_result",
+        "worker.retrying",
+        "worker.waiting_approval",
+        "worker.message",
+        "worker.finished"
+      ]
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^atr-[a-f0-9]{24}$"
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "worker_id": {
+      "type": "string",
+      "pattern": "^atw-[a-f0-9]{24}$"
+    },
+    "agent": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,62}$"
+    },
+    "role": {
+      "enum": [
+        "coordinator",
+        "worker"
+      ]
+    },
+    "turn": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "running",
+        "succeeded",
+        "failed",
+        "cancelling",
+        "cancelled",
+        "queued",
+        "waiting_retry",
+        "waiting_approval",
+        "idle",
+        "completed"
+      ],
+      "description": "The run status on run.* events, the worker status on worker.* events."
+    },
+    "tool": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]{1,64}$"
+    },
+    "tool_call_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "input_preview": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "output_preview": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "message_preview": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "from": {
+      "type": "string",
+      "pattern": "^(person|atw-[a-f0-9]{24})$",
+      "description": "person, or the sending worker's ID."
+    },
+    "to": {
+      "type": "string",
+      "pattern": "^atw-[a-f0-9]{24}$",
+      "description": "The resolved recipient worker ID, also when the sender addressed it by a unique name."
+    },
+    "next_attempt_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "retry_after_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "approval_id": {
+      "type": "string",
+      "pattern": "^apr-[a-f0-9]{24}$"
+    },
+    "resume_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "usage": {
+      "type": "object",
+      "required": [
+        "input_tokens",
+        "output_tokens"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "For example budget_exceeded, owner_access_lost, outcome_unknown, side_effects_not_approved, sandbox_unavailable, rate_limited, provider_unavailable, invalid_request, model_error."
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "run.resumed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "resume_count"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "run.finished"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "cancelled"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "worker.spawned"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_id",
+          "agent",
+          "role"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "worker.turn"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_id",
+          "turn"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "worker.tool_call"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_id",
+          "tool",
+          "tool_call_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "worker.tool_result"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_id",
+          "tool",
+          "tool_call_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "worker.retrying"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_id",
+          "next_attempt_at"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "worker.waiting_approval"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_id",
+          "tool",
+          "tool_call_id",
+          "approval_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "worker.message"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "from",
+          "to"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "worker.finished"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "worker_id",
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

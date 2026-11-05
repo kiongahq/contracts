@@ -1,0 +1,12 @@
+{
+  "target": "sandbox.create_request",
+  "why": "Images are pinned by digest.",
+  "path": "$.image",
+  "message": "does not match",
+  "document": {
+    "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+    "project_id": "prj-demo",
+    "image": "ghcr.io/kiongahq/sandbox:latest"
+  }
+}

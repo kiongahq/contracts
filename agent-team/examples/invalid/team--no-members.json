@@ -1,0 +1,25 @@
+{
+  "target": "team",
+  "why": "A team has at least one member.",
+  "path": "$.members",
+  "message": "non-empty",
+  "document": {
+    "id": "atm-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "project_id": "prj-demo",
+    "revision": 1,
+    "name": "code-change",
+    "description": "Makes code changes.",
+    "coordinator": {
+      "instructions": "Lead the change.",
+      "model": "llm"
+    },
+    "members": [],
+    "brief": "Shared rules.",
+    "limits": {
+      "max_workers_total": 20,
+      "max_concurrent_workers": 5,
+      "max_tokens": 2000000,
+      "max_seconds": 14400
+    }
+  }
+}

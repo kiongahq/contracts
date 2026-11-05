@@ -1,0 +1,9 @@
+{
+  "target": "sandbox.files_query",
+  "why": "A relative path cannot climb out.",
+  "path": "$.path",
+  "message": "does not match",
+  "document": {
+    "path": "../secret"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kionga.dev/schemas/agent-team/team/v1.json",
+  "title": "Kionga agent team",
+  "description": "A coordinator and its member agents, stored by the gateway under /api/v1/agent-teams. Create bodies carry project_id and omit the server-assigned fields (id, revision, owner_subject, created_at, updated_at). Update bodies must carry the current revision, which the gateway compares for optimistic concurrency: a stale or missing revision returns 409 revision_conflict with the latest document. They omit id, owner_subject, created_at and updated_at, and may repeat project_id, which cannot change. Stored documents carry all of these and every defaulted field. A run snapshots the team and its member definitions, so later edits never change a running team. Closed contract.",
+  "type": "object",
+  "required": [
+    "name",
+    "coordinator",
+    "members"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^atm-[a-f0-9]{24}$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "owner_subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,62}$"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "coordinator": {
+      "$ref": "#/$defs/coordinator"
+    },
+    "members": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^adf-[a-f0-9]{24}$"
+      },
+      "description": "Agent definition IDs in this project; the gateway checks that they exist."
+    },
+    "brief": {
+      "type": "string",
+      "maxLength": 16000,
+      "description": "Shared rules appended to every agent's system prompt."
+    },
+    "limits": {
+      "$ref": "#/$defs/limits"
+    }
+  },
+  "$defs": {
+    "coordinator": {
+      "type": "object",
+      "required": [
+        "instructions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32000
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "default": "llm"
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "description": "max_concurrent_workers above max_workers_total is rejected by the gateway; JSON Schema cannot compare the two.",
+      "additionalProperties": false,
+      "properties": {
+        "max_workers_total": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        },
+        "max_concurrent_workers": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16,
+          "default": 5
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20000000,
+          "default": 5000000,
+          "description": "Counts real provider usage, input and output tokens of every model call, including context re-sent on each turn."
+        },
+        "max_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 86400,
+          "default": 14400
+        }
+      }
+    }
+  }
+}

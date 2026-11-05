@@ -1,0 +1,7 @@
+{
+  "project_id": "prj-demo",
+  "revision": 3,
+  "name": "writer",
+  "description": "Use to write up findings.",
+  "instructions": "Write clearly."
+}

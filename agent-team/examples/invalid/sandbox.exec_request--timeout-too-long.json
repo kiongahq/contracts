@@ -1,0 +1,11 @@
+{
+  "target": "sandbox.exec_request",
+  "why": "Exec timeout is at most 1800 seconds.",
+  "path": "$.timeout_seconds",
+  "message": "maximum",
+  "document": {
+    "command": "pytest -q",
+    "cwd": "/workspace/repo",
+    "timeout_seconds": 1801
+  }
+}

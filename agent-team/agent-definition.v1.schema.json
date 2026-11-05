@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kionga.dev/schemas/agent-team/agent-definition/v1.json",
+  "title": "Kionga agent definition",
+  "description": "A reusable agent, stored by the gateway under /api/v1/agent-definitions. Create bodies carry project_id and omit the server-assigned fields (id, revision, owner_subject, created_at, updated_at). Update bodies must carry the current revision, which the gateway compares for optimistic concurrency: a stale or missing revision returns 409 revision_conflict with the latest document. They omit id, owner_subject, created_at and updated_at, and may repeat project_id, which cannot change. Stored documents carry all of these and every defaulted field. Closed contract: an unknown field is rejected.",
+  "type": "object",
+  "required": [
+    "name",
+    "description",
+    "instructions"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^adf-[a-f0-9]{24}$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Incremented by every save. The gateway keeps the last 20 revisions."
+    },
+    "owner_subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,62}$",
+      "description": "Unique per project; the gateway enforces uniqueness."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "description": "When to use this agent. Shown to the coordinator."
+    },
+    "instructions": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32000,
+      "description": "Role instructions, assembled into the system prompt by the gateway."
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "default": "llm",
+      "description": "A platform model name. llm is the platform chat model."
+    },
+    "tools": {
+      "type": "array",
+      "default": [],
+      "description": "Grants. A worker's tools come only from these in its run snapshot, filtered by the starter's access at call time.",
+      "items": {
+        "$ref": "#/$defs/tool_grant"
+      }
+    },
+    "workspace": {
+      "enum": [
+        "none",
+        "sandbox"
+      ],
+      "default": "none"
+    },
+    "limits": {
+      "$ref": "#/$defs/limits"
+    }
+  },
+  "if": {
+    "required": [
+      "tools"
+    ],
+    "properties": {
+      "tools": {
+        "contains": {
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "sandbox",
+                "git"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "workspace"
+    ],
+    "properties": {
+      "workspace": {
+        "const": "sandbox"
+      }
+    }
+  },
+  "$defs": {
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_turns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 100
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000000,
+          "default": 1000000,
+          "description": "Counts real provider usage, input and output tokens of every model call, including context re-sent on each turn."
+        },
+        "max_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 14400,
+          "default": 3600
+        }
+      }
+    },
+    "tool_grant": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "The sandbox exec and file tools.",
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "sandbox"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "git_clone, git_diff and git_push for one repository.",
+          "required": [
+            "kind",
+            "repository"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "git"
+            },
+            "repository": {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^https://[A-Za-z0-9][A-Za-z0-9.-]*(:[0-9]{1,5})?(/[A-Za-z0-9_~+-][A-Za-z0-9._~+-]*)+/?$",
+              "description": "An HTTPS repository URL. No user information, query or fragment, so a credential cannot travel in the URL. The host must also be in KIONGA_SANDBOX_GIT_HOSTS, which the manager checks."
+            },
+            "connection": {
+              "type": "string",
+              "pattern": "^api-[a-f0-9]+$",
+              "description": "The connection that supplies the credential, resolved by the gateway per call. A grant without one can clone public repositories and cannot push."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "ref"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "tool"
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "description": "A registered tool."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "ref"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "connection"
+            },
+            "ref": {
+              "type": "string",
+              "pattern": "^api-[a-f0-9]+$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "ref"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "knowledge"
+            },
+            "ref": {
+              "type": "string",
+              "pattern": "^kb-[a-f0-9]+$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "ref"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "dataset"
+            },
+            "ref": {
+              "type": "string",
+              "pattern": "^ds-[a-f0-9]+$"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

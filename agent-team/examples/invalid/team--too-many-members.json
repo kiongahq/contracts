@@ -1,0 +1,43 @@
+{
+  "target": "team",
+  "why": "A team has at most 16 members.",
+  "path": "$.members",
+  "message": "too long",
+  "document": {
+    "id": "atm-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "project_id": "prj-demo",
+    "revision": 1,
+    "name": "code-change",
+    "description": "Makes code changes.",
+    "coordinator": {
+      "instructions": "Lead the change.",
+      "model": "llm"
+    },
+    "members": [
+      "adf-000000000000000000000000",
+      "adf-000000000000000000000001",
+      "adf-000000000000000000000002",
+      "adf-000000000000000000000003",
+      "adf-000000000000000000000004",
+      "adf-000000000000000000000005",
+      "adf-000000000000000000000006",
+      "adf-000000000000000000000007",
+      "adf-000000000000000000000008",
+      "adf-000000000000000000000009",
+      "adf-00000000000000000000000a",
+      "adf-00000000000000000000000b",
+      "adf-00000000000000000000000c",
+      "adf-00000000000000000000000d",
+      "adf-00000000000000000000000e",
+      "adf-00000000000000000000000f",
+      "adf-000000000000000000000010"
+    ],
+    "brief": "Shared rules.",
+    "limits": {
+      "max_workers_total": 20,
+      "max_concurrent_workers": 5,
+      "max_tokens": 2000000,
+      "max_seconds": 14400
+    }
+  }
+}

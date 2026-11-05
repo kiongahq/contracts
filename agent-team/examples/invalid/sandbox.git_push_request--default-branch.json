@@ -1,0 +1,11 @@
+{
+  "target": "sandbox.git_push_request",
+  "why": "Never the default branch.",
+  "path": "$.branch",
+  "message": "does not match",
+  "document": {
+    "repository": "https://github.com/o/r",
+    "branch": "main",
+    "credential": "fixture"
+  }
+}

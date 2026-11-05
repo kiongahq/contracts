@@ -1,0 +1,8 @@
+{
+  "available": false,
+  "runtime": "runsc",
+  "runtime_verified": false,
+  "driver": "docker",
+  "unsafe_runtime": false,
+  "reason": "The runsc runtime is not registered."
+}

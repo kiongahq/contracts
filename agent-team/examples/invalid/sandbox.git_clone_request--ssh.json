@@ -1,0 +1,10 @@
+{
+  "target": "sandbox.git_clone_request",
+  "why": "Git is HTTPS only.",
+  "path": "$.repository",
+  "message": "does not match",
+  "document": {
+    "repository": "ssh://git@github.com/o/r",
+    "ref": "main"
+  }
+}

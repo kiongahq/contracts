@@ -1,0 +1,13 @@
+{
+  "target": "runner-turn-response",
+  "why": "Error codes are a fixed list.",
+  "path": "$.error.code",
+  "message": "not one of",
+  "document": {
+    "error": {
+      "code": "overloaded",
+      "message": "Provider rate limit.",
+      "retry_after_seconds": 30
+    }
+  }
+}

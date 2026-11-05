@@ -1,0 +1,9 @@
+{
+  "target": "sandbox.files_query",
+  "why": "An absolute path must be under /workspace.",
+  "path": "$.path",
+  "message": "does not match",
+  "document": {
+    "path": "/etc/passwd"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "seq": 6,
+  "type": "worker.tool_result",
+  "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+  "ts": "2026-11-04T12:00:03Z",
+  "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+  "tool": "git_push",
+  "tool_call_id": "c2",
+  "error": {
+    "code": "outcome_unknown",
+    "message": "The gateway stopped during this call, so its outcome is unknown."
+  }
+}

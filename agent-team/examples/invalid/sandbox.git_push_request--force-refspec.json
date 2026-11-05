@@ -1,0 +1,11 @@
+{
+  "target": "sandbox.git_push_request",
+  "why": "A refspec cannot force or delete.",
+  "path": "$.branch",
+  "message": "does not match",
+  "document": {
+    "repository": "https://github.com/o/r",
+    "branch": "+kionga/atr-aaaaaaaaaaaaaaaaaaaaaaaa/x",
+    "credential": "fixture"
+  }
+}

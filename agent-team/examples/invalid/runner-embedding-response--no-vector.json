@@ -1,0 +1,7 @@
+{
+  "target": "runner-embedding-response",
+  "why": "A response is a vector.",
+  "path": "$",
+  "message": "vector",
+  "document": {}
+}

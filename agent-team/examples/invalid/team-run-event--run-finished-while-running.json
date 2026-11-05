@@ -1,0 +1,17 @@
+{
+  "target": "team-run-event",
+  "why": "run.finished carries a terminal status.",
+  "path": "$.status",
+  "message": "not one of",
+  "document": {
+    "seq": 11,
+    "type": "run.finished",
+    "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "ts": "2026-11-04T12:00:08Z",
+    "status": "running",
+    "error": {
+      "code": "budget_exceeded",
+      "message": "The team token limit was reached."
+    }
+  }
+}

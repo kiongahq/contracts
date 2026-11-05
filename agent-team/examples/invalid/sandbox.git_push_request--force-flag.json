@@ -1,0 +1,12 @@
+{
+  "target": "sandbox.git_push_request",
+  "why": "There is no force option.",
+  "path": "$",
+  "message": "force",
+  "document": {
+    "repository": "https://github.com/o/r",
+    "branch": "kionga/atr-aaaaaaaaaaaaaaaaaaaaaaaa/fix-parser",
+    "credential": "fixture",
+    "force": true
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "target": "agent-definition",
+  "why": "A git grant requires workspace to be stated as sandbox.",
+  "path": "$",
+  "message": "'workspace' is a required",
+  "document": {
+    "name": "writer",
+    "description": "Use to write up findings.",
+    "instructions": "Write clearly.",
+    "tools": [
+      {
+        "kind": "git",
+        "repository": "https://github.com/o/r"
+      }
+    ]
+  }
+}

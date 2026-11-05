@@ -1,0 +1,28 @@
+{
+  "target": "team",
+  "why": "max_tokens is at most 20,000,000.",
+  "path": "$.limits.max_tokens",
+  "message": "maximum",
+  "document": {
+    "id": "atm-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "project_id": "prj-demo",
+    "revision": 1,
+    "name": "code-change",
+    "description": "Makes code changes.",
+    "coordinator": {
+      "instructions": "Lead the change.",
+      "model": "llm"
+    },
+    "members": [
+      "adf-aaaaaaaaaaaaaaaaaaaaaaaa",
+      "adf-bbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "brief": "Shared rules.",
+    "limits": {
+      "max_workers_total": 20,
+      "max_concurrent_workers": 5,
+      "max_tokens": 20000001,
+      "max_seconds": 14400
+    }
+  }
+}

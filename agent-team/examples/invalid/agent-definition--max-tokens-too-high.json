@@ -1,0 +1,47 @@
+{
+  "target": "agent-definition",
+  "why": "max_tokens is at most 5,000,000.",
+  "path": "$.limits.max_tokens",
+  "message": "maximum",
+  "document": {
+    "id": "adf-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "project_id": "prj-demo",
+    "revision": 1,
+    "name": "bug-fixer",
+    "description": "Use for one defect.",
+    "instructions": "Fix one defect and prove it.",
+    "model": "llm",
+    "tools": [
+      {
+        "kind": "sandbox"
+      },
+      {
+        "kind": "git",
+        "repository": "https://github.com/o/r",
+        "connection": "api-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "tool",
+        "ref": "lookup"
+      },
+      {
+        "kind": "connection",
+        "ref": "api-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "knowledge",
+        "ref": "kb-aaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "dataset",
+        "ref": "ds-aaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "workspace": "sandbox",
+    "limits": {
+      "max_turns": 100,
+      "max_tokens": 5000001,
+      "max_seconds": 3600
+    }
+  }
+}

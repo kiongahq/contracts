@@ -1,0 +1,14 @@
+{
+  "seq": 7,
+  "type": "worker.retrying",
+  "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+  "ts": "2026-11-04T12:00:04Z",
+  "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+  "attempt": 2,
+  "next_attempt_at": "2026-11-04T12:00:34Z",
+  "retry_after_seconds": 30,
+  "error": {
+    "code": "rate_limited",
+    "message": "Provider rate limit."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "seq": 10,
+  "type": "worker.finished",
+  "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+  "ts": "2026-11-04T12:00:07Z",
+  "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+  "status": "completed",
+  "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "target": "team-run-event",
+  "why": "Event types are a fixed list.",
+  "path": "$.type",
+  "message": "not one of",
+  "document": {
+    "seq": 2,
+    "type": "worker.exploded",
+    "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "ts": "2026-11-04T12:00:01Z",
+    "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+    "agent": "bug-fixer",
+    "turn": 1,
+    "duration_ms": 900,
+    "output_preview": "Reproducing first.",
+    "usage": {
+      "input_tokens": 300,
+      "output_tokens": 40
+    }
+  }
+}

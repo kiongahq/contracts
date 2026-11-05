@@ -1,0 +1,6 @@
+{
+  "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+  "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+  "project_id": "prj-demo",
+  "image": "ghcr.io/kiongahq/sandbox@sha256:0000000000000000000000000000000000000000000000000000000000000000"
+}

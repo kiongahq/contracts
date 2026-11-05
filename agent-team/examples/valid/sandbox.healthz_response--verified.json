@@ -1,0 +1,6 @@
+{
+  "runtime": "runsc",
+  "runtime_verified": true,
+  "driver": "docker",
+  "unsafe_runtime": false
+}

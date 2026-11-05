@@ -1,0 +1,11 @@
+{
+  "seq": 8,
+  "type": "worker.waiting_approval",
+  "run_id": "atr-aaaaaaaaaaaaaaaaaaaaaaaa",
+  "ts": "2026-11-04T12:00:05Z",
+  "worker_id": "atw-bbbbbbbbbbbbbbbbbbbbbbbb",
+  "tool": "git_push",
+  "tool_call_id": "c3",
+  "approval_id": "apr-eeeeeeeeeeeeeeeeeeeeeeee",
+  "status": "waiting_approval"
+}

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kionga.dev/schemas/agent-team/template/v1.json",
+  "title": "Kionga agent team template",
+  "description": "A starter team and its agents. Creating from a template creates each agent, then a team whose members are the new definition IDs. Closed contract.",
+  "type": "object",
+  "required": [
+    "id",
+    "template_version",
+    "name",
+    "description",
+    "team",
+    "agents"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,62}$"
+    },
+    "template_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "team": {
+      "type": "object",
+      "required": [
+        "name",
+        "coordinator",
+        "members"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,62}$"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "coordinator": {
+          "$ref": "https://kionga.dev/schemas/agent-team/team/v1.json#/$defs/coordinator"
+        },
+        "brief": {
+          "type": "string",
+          "maxLength": 16000,
+          "description": "Shared rules appended to every agent's system prompt."
+        },
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,62}$"
+          },
+          "description": "Names from agents, resolved to IDs when the template is used."
+        },
+        "limits": {
+          "$ref": "https://kionga.dev/schemas/agent-team/team/v1.json#/$defs/limits"
+        }
+      }
+    },
+    "agents": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "$ref": "https://kionga.dev/schemas/agent-team/agent-definition/v1.json"
+      }
+    },
+    "setup_notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "description": "What a person must add before the team can do real work, such as repository grants."
+    }
+  }
+}

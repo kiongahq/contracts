@@ -1,0 +1,47 @@
+{
+  "target": "agent-definition",
+  "why": "Grants come from a fixed list of kinds.",
+  "path": "$.tools[0]",
+  "message": "not valid under any",
+  "document": {
+    "id": "adf-aaaaaaaaaaaaaaaaaaaaaaaa",
+    "project_id": "prj-demo",
+    "revision": 1,
+    "name": "bug-fixer",
+    "description": "Use for one defect.",
+    "instructions": "Fix one defect and prove it.",
+    "model": "llm",
+    "tools": [
+      {
+        "kind": "shell"
+      },
+      {
+        "kind": "git",
+        "repository": "https://github.com/o/r",
+        "connection": "api-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "tool",
+        "ref": "lookup"
+      },
+      {
+        "kind": "connection",
+        "ref": "api-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "knowledge",
+        "ref": "kb-aaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "kind": "dataset",
+        "ref": "ds-aaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "workspace": "sandbox",
+    "limits": {
+      "max_turns": 100,
+      "max_tokens": 200000,
+      "max_seconds": 3600
+    }
+  }
+}

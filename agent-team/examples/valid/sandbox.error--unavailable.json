@@ -1,0 +1,4 @@
+{
+  "error": "sandbox_unavailable",
+  "message": "The runsc runtime is not registered."
+}
