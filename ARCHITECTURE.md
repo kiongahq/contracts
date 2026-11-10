@@ -89,7 +89,7 @@ Test configuration and the pinned ruff rule set (`E4`, `E7`, `E9`, `F`).
 - The schema describes structure only. Rules that a JSON Schema cannot express live
   in the platform validator: dependency cycles (reported as a path), dependencies
   on nodes that do not exist, five-field cron expressions and IANA timezones. Users
-  must validate against the gateway (`mlaiops pipeline validate` or
+  must validate against the gateway (`kionga pipeline validate` or
   `POST /api/v1/pipelines/validate`) before applying a definition.
 - Field names are camelCase, like Kubernetes manifests. The platform maps them to
   its snake_case API types.
