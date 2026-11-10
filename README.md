@@ -62,7 +62,7 @@ against a running gateway, which also rejects dependency cycles, dependencies on
 missing nodes, and invalid cron expressions or timezones:
 
 ```bash
-kionga pipeline validate churn.kionga.yaml
+kionga-cli pipeline validate churn.kionga.yaml
 ```
 
 ## Documentation
